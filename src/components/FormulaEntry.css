@@ -25,6 +25,10 @@ input[type=text]{
     vertical-align: middle;
 }
 
+.btnCalculate:hover{
+    background-color: darkgreen;
+}
+
 .container{
     margin-left: 25px;
     margin-right: 25px;

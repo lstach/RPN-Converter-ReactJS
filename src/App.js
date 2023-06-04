@@ -3,6 +3,7 @@ import Footer from "./components/Footer";
 import FormulaEntry from "./components/FormulaEntry";
 import Header from "./components/Header";
 import Result from "./components/Result";
+import Modal from "./components/Modal";
 
 function App() {
   return (
@@ -14,6 +15,8 @@ function App() {
       </div>
       <Result></Result>
       <AboutRPN></AboutRPN>
+
+      
 
       <Footer></Footer>
 

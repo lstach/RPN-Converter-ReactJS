@@ -1,0 +1,18 @@
+.subtitle{
+    font-family: 'Trebuchet MS';
+    font-size: x-large;
+    
+}
+
+.subContainer{
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.line{
+    color: black;
+}
+
+.text{
+    font-family: 'Trebuchet MS';
+}

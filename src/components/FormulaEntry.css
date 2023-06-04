@@ -1,0 +1,33 @@
+input[type=text]{
+    width: 100%;
+    border: 2px solid gray;
+    border-radius: 4px;
+    padding: 12px;
+    
+    font-size: 24px;
+    font-family: 'Courier New';
+
+}
+
+.btnCalculate{
+    border-width: 0;
+    border-color: black;
+    background-color: green;
+
+    color: white;
+    font-size: large;
+    font-family: 'Trebuchet MS';
+    
+    
+    border-radius: 4px;
+    padding: 20px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.container{
+    margin-left: 25px;
+    margin-right: 25px;
+    display: flex;
+    flex-direction: row;
+}

@@ -1,0 +1,25 @@
+.bigContainer{
+    margin-left: 25px;
+    margin-right: 25px;
+    
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+}
+
+.title{
+    font-family: 'Franklin Gothic Medium';
+    margin: auto;
+    margin-top: 50px;
+}
+
+.localText{
+    font-family: 'Trebuchet MS';
+
+    margin: auto;
+    margin-bottom: 10px;
+    margin-top: 10px;
+
+}

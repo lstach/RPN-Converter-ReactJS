@@ -1,0 +1,33 @@
+.footer{
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    width: 100vw;
+    height: 50px;
+}
+
+.github{
+    font-size: medium; 
+}
+
+.button{
+    font-size: medium;
+    background-color: white;
+    border: 0px;
+}
+
+.button:hover{
+    background-color: lightblue;
+}
+
+.about{
+    font-size: medium;
+}
+
+.image{
+    margin-top: 11px;
+    margin-right: 2px;
+}

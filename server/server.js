@@ -1,12 +1,18 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 
-function getStuff(){
-    return "hello, stuff!";
+app.use(cors());
+app.use(express.json())
+
+
+const myFunct = async (inputD) => {
+    return `Received ${inputD}`
 }
 
-app.get("/api", (req, res) =>{
-    res.json(getStuff())
+app.post("/api", async (req, res) => {
+    res.json(req.body.inputD)
+    
     //res.json({"users": ["user1", "user2", "user3"]})
 })
 

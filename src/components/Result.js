@@ -21,6 +21,8 @@ function Result(){
             <p style={{color: 'red'}}>error text</p>
             <h1 className='subtitle' style={{fontWeight: 'lighter'}}>Result:</h1>
             
+          
+
             {(backendData === 'hello, stuff!') ? (
                 <p>{backendData}</p>
             ): (

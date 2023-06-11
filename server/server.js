@@ -6,12 +6,13 @@ app.use(cors());
 app.use(express.json())
 
 
-const myFunct = async (inputD) => {
-    return `Received ${inputD}`
-}
-
 app.post("/api", async (req, res) => {
-    res.json(req.body.inputD)
+
+    //  res.json(req.body.inputD)   //////
+
+    let tempS = req.body.inputD + ' hi';
+    
+    res.json(tempS)
     
     //res.json({"users": ["user1", "user2", "user3"]})
 })

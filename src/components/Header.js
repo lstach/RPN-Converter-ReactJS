@@ -1,6 +1,10 @@
 import './Header.css';
+import React, { useEffect, useState } from 'react'
 
 function Header(){
+
+    const [paragraphText, setParagraphText] = useState('') // this is how i set it
+
     return (
         <div className='bigContainer'>
 

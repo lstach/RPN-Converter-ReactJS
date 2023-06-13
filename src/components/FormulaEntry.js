@@ -25,10 +25,14 @@ function FormulaEntry(){
         // JSX code to get result:
         // <p>{resultText}</p>
         
-        //let serverResult = result.data.split(',');
-
+        let serverResult = result.data.split(",");
+        
+        console.log('0 = ', serverResult[0]);
+        console.log('1 = ', serverResult[1]);
         setOutputD(result.data);
 
+        setRPNFormula(serverResult[0]);
+        setRPNResult(serverResult[1]);
         
     }
 

@@ -40,8 +40,7 @@ app.post("/api", async (req, res) => {
     //  res.json(req.body.inputD)   //////
 
     let tempS = req.body.inputD + ' hi';
-    res.json(tempS)
-    /*
+    
     let infixTokens = [];
     error = false;
 
@@ -61,7 +60,7 @@ app.post("/api", async (req, res) => {
     //res.json({"users": ["user1", "user2", "user3"]})
 
 
-    */
+    
 
 })
  

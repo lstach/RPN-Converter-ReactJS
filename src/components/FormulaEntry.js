@@ -22,8 +22,9 @@ function FormulaEntry() {
       });
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        console.log('hello');
+        
         let apiError = error.response;
+        console.log(typeof(apiError));
         console.log(apiError);
       }
     }

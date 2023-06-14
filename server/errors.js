@@ -20,3 +20,6 @@ class UnknownTokenError extends Error{
         this.name = 'UnkownTokenError';
     }
 }
+exports.DoubleOperandError = DoubleOperandError;
+exports.DoubleOperatorError = DoubleOperatorError;
+exports.UnknownTokenError = UnknownTokenError;

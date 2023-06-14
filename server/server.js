@@ -1,11 +1,13 @@
-//import './errors';
-
+const errors = require('./errors.js')
 const express = require('express')
-const app = express()
 const cors = require('cors')
+const helmet = require('helmet')
 
-app.use(cors());
+const app = express();
+
+app.use(cors())
 app.use(express.json())
+app.use(helmet())
 
 class Stack{
 
@@ -19,7 +21,7 @@ class Stack{
 
     pop(){
         if (this.items.length == "0"){
-            return underflow;
+            return null;
         }
         return this.items.pop();
     }
@@ -44,23 +46,27 @@ app.post("/api", async (req, res) => {
     let infixTokens = [];
     error = false;
 
-    infixTokens = parse(req.body.inputD);
+    
 
+    // CHECK FOR PARSING ERRORS
+    try {
+        infixTokens = parse(req.body.inputD);
+    }
+    catch(error) {
+        res.status(400).send(error.message)
+    }
     
 
     let rpnTokens = shunt(infixTokens);
     let result = calclulate(rpnTokens);
     
-    let rpnFormula = rpnTokens.join('');
+    let rpnFormula = rpnTokens.join('   ');
 
     serverResult = rpnFormula + ',' + result;
-    res.json(serverResult);
+    //res.json(serverResult);
     //res.json(tempS)
     
     //res.json({"users": ["user1", "user2", "user3"]})
-
-
-    
 
 })
  
@@ -150,6 +156,10 @@ function calclulate(tokens){
 // output: list of tokens
 function parse(expression){ //parses a given Math expression in infix notation into individual tokens
 
+    throw new Error("Test Error.");
+    
+    //throw new errors.UnknownTokenError();
+
     var tokens = [];
     var numberBuilder = "";
 
@@ -157,6 +167,9 @@ function parse(expression){ //parses a given Math expression in infix notation i
         var givenChar = expression.substring(i, i+1);
         if (isNumeric(givenChar) || givenChar == "."){ //if given character is a numeric operand OR a decimal point
             numberBuilder += givenChar;
+        }
+        else if (!isNumeric(givenChar) && !isOperator(givenChar)){
+            throw new UnknownTokenError;
         }
         else if (givenChar == "-" && isLeftParen(expression.substring(i-1, i))){
             numberBuilder += givenChar;

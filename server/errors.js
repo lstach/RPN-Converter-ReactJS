@@ -20,6 +20,15 @@ class UnknownTokenError extends Error{
         this.name = 'UnkownTokenError';
     }
 }
+
+class ParenthesesError extends Error{
+    constructor(message){
+        super(message);
+        this.name = 'ParenthesesError';
+    }
+}
+
 exports.DoubleOperandError = DoubleOperandError;
 exports.DoubleOperatorError = DoubleOperatorError;
 exports.UnknownTokenError = UnknownTokenError;
+exports.ParenthesesError = ParenthesesError;

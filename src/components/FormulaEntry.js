@@ -13,27 +13,81 @@ function FormulaEntry() {
   const [outputD, setOutputD] = useState("");
 
   const submit = async () => {
-    //console.log(inputD);
     let errorFlag = false;
+    var result;
 
-    try {
-      const result = await axios.post("http://localhost:5000/api/", {
+    /*
+    axios.post("http://localhost:5000/api/", {
         inputD,
-      });
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        
-        let apiError = error.response;
-        console.log(typeof(apiError));
-        console.log(apiError);
-      }
-    }
+    })
+    .then(function (response){
+      console.log("hello");
+    })
+    .catch(function (error) {
+      console.log('goodbye');
+    });*/
 
+
+    if (inputD != ''){
+      try {
+        result = await axios.post("http://localhost:5000/api/", {
+          inputD,
+        });
+        
+  
+      } catch (error) {
+        //console.log('hello');
+        if (error.response && error.response.status === 400) {
+          
+          let apiError = error.response;
+          //console.log(typeof(apiError));
+          //console.log(apiError);
+          //console.log(apiError.response);
+          //setErrorText(apiError.response);
+        }
+        else if (error.response && error.response.status === 500){
+          let apiError = error.response;
+          let split = apiError.data.split(',')
+          let errorType = split[0]
+          let token = split[1]
+          console.log('token = ', token)
+          //setErrorText(errorType);
+          
+          switch(errorType){
+              case "UnknownToken":
+                setErrorText("Unknown token: '" + token + "'");
+                break;
+              case "DoubleOperator":
+                setErrorText("Error: missing an operator before '"+ token+ "'");
+                break;
+              case "DoubleOperand":
+                setErrorText("Error: missing an operand before '"+ token+ "'");
+                break;
+              case "ParenthesesError":
+                setErrorText("Mismatched parentheses '"+ token+ "'");
+                break;
+              default:
+                setErrorText("Error in parsing; check input and try again.");
+                break;
+          }
+          setRPNFormula('');
+          setRPNResult('');
+        }
+  
+        return;
+      }
+  
+      let serverResult = result.data.split(',');
+      setRPNFormula(serverResult[0]);
+      setRPNResult("= " + serverResult[1]);
+      setErrorText('');
+    }else{
+      setErrorText('');
+    }
+    
+    
     // JSX code to get result:
     // <p>{resultText}</p>
-
-    if (!errorFlag) {
-    }
   };
 
   return (
@@ -65,7 +119,7 @@ function FormulaEntry() {
         className="subContainer"
         style={{ marginBottom: "100px", marginTop: "25px" }}
       >
-        <p style={{ color: "red" }}>error text</p>
+        <p style={{ color: "red" }}>{errorText}</p>
 
         <h1 className="subtitle" style={{ fontWeight: "lighter" }}>
           RPN Formula and Solution:
@@ -74,7 +128,7 @@ function FormulaEntry() {
         <p>{outputD}</p>
 
         <div>
-          <p>{rpnFormula}</p>
+          <p className="resultText">{rpnFormula}</p>
           <p>{rpnResult}</p>
         </div>
       </div>

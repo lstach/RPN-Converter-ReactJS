@@ -20,14 +20,12 @@ function Footer(){
     return (
         <div className='footer'>
 
-            
-
             <GithubIcon className='image'/>
             <button className='button' onClick={gitHub}>
                 GitHub
             </button>
 
-            <button className='button' onClick={about}>About</button>            
+            {/* <button className='button' onClick={about}>About</button> */}
         </div>
     );
 }

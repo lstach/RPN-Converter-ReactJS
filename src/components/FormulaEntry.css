@@ -40,3 +40,8 @@ input[type=text]{
     margin-left: 25px;
     margin-right: 25px;
 }
+
+.resultText{
+    font-size: x-large;
+    font-family: 'Trebuchet MS';
+}

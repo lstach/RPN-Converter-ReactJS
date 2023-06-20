@@ -87,7 +87,7 @@ jobs:
               pm2 save
             else
               cd "${{ github.event.inputs.appDirectory }}"
-              git pull origin master || exit 1
+              git pull origin main || exit 1
               cd ${{ github.event.inputs.serverSubdirectory }}
 
               npm install

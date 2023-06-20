@@ -27,65 +27,66 @@ function FormulaEntry() {
       console.log('goodbye');
     });*/
 
-
-    if (inputD != ''){
+    if (inputD != "") {
       try {
-        result = await axios.post("http://localhost:5000/api/", {
+        let requestString = "";
+        if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
+          requestString = "http://localhost:5000/api/";
+        } else {
+          requestString = "/api/";
+        }
+
+        result = await axios.post(requestString, {
           inputD,
         });
-        
-  
       } catch (error) {
         //console.log('hello');
         if (error.response && error.response.status === 400) {
-          
           let apiError = error.response;
           //console.log(typeof(apiError));
           //console.log(apiError);
           //console.log(apiError.response);
           //setErrorText(apiError.response);
-        }
-        else if (error.response && error.response.status === 500){
+        } else if (error.response && error.response.status === 500) {
           let apiError = error.response;
-          let split = apiError.data.split(',')
-          let errorType = split[0]
-          let token = split[1]
-          console.log('token = ', token)
+          let split = apiError.data.split(",");
+          let errorType = split[0];
+          let token = split[1];
+          console.log("token = ", token);
           //setErrorText(errorType);
-          
-          switch(errorType){
-              case "UnknownToken":
-                setErrorText("Unknown token: '" + token + "'");
-                break;
-              case "DoubleOperator":
-                setErrorText("Error: missing an operator before '"+ token+ "'");
-                break;
-              case "DoubleOperand":
-                setErrorText("Error: missing an operand before '"+ token+ "'");
-                break;
-              case "ParenthesesError":
-                setErrorText("Mismatched parentheses '"+ token+ "'");
-                break;
-              default:
-                setErrorText("Error in parsing; check input and try again.");
-                break;
+
+          switch (errorType) {
+            case "UnknownToken":
+              setErrorText("Unknown token: '" + token + "'");
+              break;
+            case "DoubleOperator":
+              setErrorText("Error: missing an operator before '" + token + "'");
+              break;
+            case "DoubleOperand":
+              setErrorText("Error: missing an operand before '" + token + "'");
+              break;
+            case "ParenthesesError":
+              setErrorText("Mismatched parentheses '" + token + "'");
+              break;
+            default:
+              setErrorText("Error in parsing; check input and try again.");
+              break;
           }
-          setRPNFormula('');
-          setRPNResult('');
+          setRPNFormula("");
+          setRPNResult("");
         }
-  
+
         return;
       }
-  
-      let serverResult = result.data.split(',');
+
+      let serverResult = result.data.split(",");
       setRPNFormula(serverResult[0]);
       setRPNResult("= " + serverResult[1]);
-      setErrorText('');
-    }else{
-      setErrorText('');
+      setErrorText("");
+    } else {
+      setErrorText("");
     }
-    
-    
+
     // JSX code to get result:
     // <p>{resultText}</p>
   };

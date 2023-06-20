@@ -1,0 +1,103 @@
+name: Deploy to AWS Ubuntu Server
+
+on:
+  workflow_dispatch:
+    inputs:
+      appDirectory:
+        description: "Application directory path"
+        required: false
+        default: "/home/ubuntu/RPN-Calculator/Full"
+      tmpDirectory:
+        description: "Temporary directory path"
+        required: false
+        default: "/home/ubuntu/tmp"
+      nginxConfig:
+        description: "Nginx config file path"
+        required: false
+        default: "/etc/nginx/sites-enabled/default"
+      repositoryURL:
+        description: "The HTTPS .git URL for the repository"
+        required: false
+        default: "https://github.com/lstach/RPN-Converter-ReactJS.git"
+      serverSubdirectory:
+        description: "The path of the server directory within the repository"
+        required: false
+        default: "server"
+      pm2ProcessName:
+        description: "The name of PM2 Process to be restarted"
+        required: false
+        default: "rpn-express"
+
+env:
+  EC2_INSTANCE_IP: ${{ secrets.EC2_INSTANCE_IP }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  PORT: ${{ secrets.PORT }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+
+      - name: Setup Node.js 18.x
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: 18.x
+
+      - name: Cache node modules
+        uses: actions/cache@v3.2.6
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install NPM Packages and Build App
+        run: |
+          npm ci
+          npm run build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa ${{ secrets.EC2_INSTANCE_IP }} >> ~/.ssh/known_hosts
+
+      - name: Ensure Temporary Directory Exists and is Empty on Server
+        run: |
+          ssh ubuntu@${{ secrets.EC2_INSTANCE_IP }} "mkdir -p ${{ github.event.inputs.tmpDirectory }} && rm -rf ${{ github.event.inputs.tmpDirectory }}/*"
+
+      - name: Transfer build to Server
+        run: |
+          tar czf build.tar.gz -C build .
+          scp build.tar.gz ubuntu@${{ secrets.EC2_INSTANCE_IP }}:${{ github.event.inputs.tmpDirectory }}
+          ssh ubuntu@${{ secrets.EC2_INSTANCE_IP }} "sudo tar xzf ${{ github.event.inputs.tmpDirectory }}/build.tar.gz -C /var/www/html && rm ${{ github.event.inputs.tmpDirectory }}/build.tar.gz"
+
+      - name: Setup Server and Deploy
+        run: |
+          ssh ubuntu@${{ secrets.EC2_INSTANCE_IP }} << EOF
+            set -e
+            if [ ! -d "${{ github.event.inputs.appDirectory }}" ]; then
+              mkdir -p "${{ github.event.inputs.appDirectory }}"
+              cd "${{ github.event.inputs.appDirectory }}"
+              git clone ${{ github.event.inputs.repositoryURL }} ./
+              cd ${{ github.event.inputs.serverSubdirectory }}
+              npm install
+
+              pm2 start ecosystem.config.cjs
+              pm2 save
+            else
+              cd "${{ github.event.inputs.appDirectory }}"
+              git pull origin master || exit 1
+              cd ${{ github.event.inputs.serverSubdirectory }}
+
+              npm install
+
+              pm2 restart ${{ github.event.inputs.pm2ProcessName }}
+            fi
+
+            if ! cmp -s "${{ github.event.inputs.nginxConfig }}" "${{ github.event.inputs.appDirectory }}/${{ github.event.inputs.serverSubdirectory }}/nginx/default"; then
+              sudo cp "${{ github.event.inputs.appDirectory }}/${{ github.event.inputs.serverSubdirectory }}/nginx/default" "${{ github.event.inputs.nginxConfig }}"
+              sudo systemctl restart nginx
+            fi
+          EOF
